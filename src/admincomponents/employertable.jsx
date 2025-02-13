@@ -1,144 +1,132 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Pagination from './pagination';
-import SearchBar from './searchbar';
+import React from 'react';
+import { useTable } from 'react-table';
+import { FaTrashAlt } from 'react-icons/fa'; // Importing trash icon from react-icons
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const EmployerTable = () => {
-  const [employersData, setEmployersData] = useState([
-    { name: 'John Doe', company: 'ABC Corp', position: 'Manager', document: 'Resume.pdf', contact: '123-456-7890', email: 'john@example.com' },
-    { name: 'Jane Smith', company: 'XYZ Ltd', position: 'Developer', document: 'CoverLetter.docx', contact: '987-654-3210', email: 'jane@example.com' },
-    { name: 'Michael Johnson', company: 'Tech Solutions', position: 'Lead Engineer', document: 'Resume.pdf', contact: '555-123-4567', email: 'michael@example.com' },
-    { name: 'Emily Davis', company: 'InnoTech', position: 'Product Manager', document: 'Resume.pdf', contact: '222-333-4444', email: 'emily@example.com' },
-    { name: 'Daniel Brown', company: 'Smart Innovations', position: 'Software Engineer', document: 'Portfolio.pdf', contact: '111-555-7890', email: 'daniel@example.com' },
-    { name: 'Olivia Wilson', company: 'Tech Innovators', position: 'UX/UI Designer', document: 'CoverLetter.docx', contact: '333-444-5555', email: 'olivia@example.com' },
-    { name: 'James Miller', company: 'GlobalTech', position: 'CTO', document: 'Resume.pdf', contact: '444-555-6666', email: 'james@example.com' },
-    { name: 'Sophia Taylor', company: 'Innovative Designs', position: 'Creative Director', document: 'Portfolio.pdf', contact: '555-666-7777', email: 'sophia@example.com' },
-    { name: 'Liam Anderson', company: 'TechLab Solutions', position: 'Full Stack Developer', document: 'Resume.pdf', contact: '666-777-8888', email: 'liam@example.com' }
-  ]);
+  const navigate = useNavigate(); // Initialize navigate function
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showConfirmModal, setShowConfirmModal] = useState(false);  
-  const [selectedIndex, setSelectedIndex] = useState(null);  
-  const itemsPerPage = 10;
-
-  const totalItems = employersData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  const filteredData = employersData.filter((employer) =>
-    employer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    employer.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    employer.position.toLowerCase().includes(searchQuery.toLowerCase())
+  // Sample data for authorized representatives and their respective companies
+  const initialData = React.useMemo(
+    () => [
+      {
+        name: 'John Doe',  // Changed from representative to name
+        company: 'Tech Innovators Ltd.',
+        position: 'CEO',   // Added position field
+        contact: '123-456-7890',  // Added contact field
+        email: 'john.doe@example.com',  // Added email field
+        idFront: 'path/to/front-id.jpg', // Added ID images
+        idBack: 'path/to/back-id.jpg',
+      },
+      {
+        name: 'Jane Smith',
+        company: 'Creative Solutions Inc.',
+        position: 'CTO',
+        contact: '987-654-3210',
+        email: 'jane.smith@example.com',
+        idFront: 'path/to/front-id2.jpg',
+        idBack: 'path/to/back-id2.jpg',
+      },
+      // Additional entries...
+    ],
+    []
   );
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const [representativeData, setRepresentativeData] = React.useState(initialData);
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // Columns configuration
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Employer Name',  // Renamed from Authorized Representative to Employer Name
+        accessor: 'name',         // Changed from 'representative' to 'name'
+      },
+      {
+        Header: 'Company',
+        accessor: 'company',
+      },
+      {
+        Header: 'Action',
+        Cell: ({ row }) => (
+          <button
+            onClick={() => handleDelete(row.index)}
+            className="btn btn-danger btn-sm"
+          >
+            <FaTrashAlt />
+          </button>
+        ),
+      },
+    ],
+    []
+  );
 
-  const navigate = useNavigate();
-
-  const handleRowClick = (employer) => {
-    navigate('/adminemployers/employerdetailspreview', { state: { employer } });
+  // Delete handler function
+  const handleDelete = (index) => {
+    setRepresentativeData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
-  const handleDeleteClick = (index) => {
-    setSelectedIndex(index); 
-    setShowConfirmModal(true);
+  // Handle row click to navigate to another page and pass data via state
+  const handleRowClick = (rowData) => {
+    navigate('/adminemployers/employerdetailspreview', { state: { employer: rowData } });
   };
 
-  const handleDeleteConfirm = () => {
-    const updatedData = [...employersData];
-    updatedData.splice(selectedIndex, 1); 
-    setEmployersData(updatedData);
-    setShowConfirmModal(false); 
-  };
-
-  const handleDeleteCancel = () => {
-    setShowConfirmModal(false); 
-  };
+  // Use the useTable hook to create the table instance
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data: representativeData,
+  });
 
   return (
-    <div>
-      {/* Search Bar Component */}
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+    <div className="container-fluid">
+      <h1 className="h3 mb-2 text-gray-800">Employers Table</h1>
+      <p className="mb-4">
+        The table below displays authorized representatives with their respective companies, and an action to delete their entries.
+      </p>
 
-      <table
-        className="table table-hover"
-        style={{
-          width: '130%',
-          tableLayout: 'fixed',
-          marginBottom: '20px',
-          fontSize: '16px',
-          marginLeft: '-140px'
-        }}
-      >
-        <thead>
-          <tr>
-            <th style={{ width: '40%' }}>Authorized Representative</th>
-            <th style={{ width: '35%' }}>Company</th>
-            <th style={{ width: '25%' }}>Action</th> 
-          </tr>
-        </thead>
-        <tbody>
-          {currentItems.map((employer, index) => (
-            <tr
-              key={index}
-              onClick={() => handleRowClick(employer)}  
-              style={{ cursor: 'pointer' }}  
-            >
-              <td style={{ width: '40%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', textAlign: 'left' }}>
-                  <img
-                    src="/src/assets/berns.jpg"
-                    alt="Logo"
-                    style={{
-                      width: '50px',
-                      height: '50px',
-                      objectFit: 'cover',
-                      marginRight: '10px',
-                      borderRadius: '50%',
-                    }}
-                  />
-                  <div>
-                    <div>{employer.name}</div>
-                    <div>{employer.position}</div>
-                  </div>
-                </div>
-              </td>
-              <td style={{ width: '35%' }}>{employer.company}</td>
-              <td style={{ width: '25%' }}>
-                <i
-                  className="fas fa-trash-alt icon-size"
-                  style={{ color: 'red', cursor: 'pointer' }}
-                  onClick={() => handleDeleteClick(index)}  
-                ></i>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <Pagination
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        totalItems={filteredData.length}
-        paginate={paginate}
-      />
-
-      {/* Confirmation Modal for Delete */}
-      {showConfirmModal && (
-        <div className="modal" style={{ display: 'block', position: 'fixed', top: '0', left: '0', right: '0', bottom: '0', backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: '1000' }}>
-          <div className="modal-content" style={{ margin: 'auto', background: 'white', padding: '20px', width: '300px', borderRadius: '10px' }}>
-            <h4>Are you sure you want to delete?</h4>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <button onClick={handleDeleteConfirm} style={{ background: 'red', color: 'white', padding: '5px 15px', border: 'none', borderRadius: '5px' }}>Yes</button>
-              <button onClick={handleDeleteCancel} style={{ background: 'grey', color: 'white', padding: '5px 15px', border: 'none', borderRadius: '5px' }}>No</button>
-            </div>
+      {/* DataTable Example */}
+      <div className="card shadow mb-4">
+        <div className="card-header py-3">
+          <h6 className="m-0 font-weight-bold text-primary">Employers Table</h6>
+        </div>
+        <div className="card-body">
+          <div className="table-responsive">
+            <table className="table table-bordered" {...getTableProps()} width="100%" cellspacing="0">
+              <thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>Employer Name</th>
+                  <th>Company</th>
+                  <th>Action</th>
+                </tr>
+              </tfoot>
+              <tbody {...getTableBodyProps()}>
+                {rows.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      onClick={() => handleRowClick(row.original)} // Row click to navigate
+                      style={{ cursor: 'pointer' }} // Make it look clickable
+                    >
+                      {row.cells.map((cell) => (
+                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -1,114 +1,178 @@
-import React, { useState } from 'react';
-import Pagination from './pagination';
-import SearchBar from './searchbar';
-import { useNavigate } from 'react-router-dom';  
+import React from 'react';
+import { useTable } from 'react-table';
+import { FaTrashAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
-const ApplicantTable = () => {
-  const applicantsData = [
-    { name: 'John Doe', appliedPosition: 'Software Engineer', skills: 'React, Node.js', resume: 'Resume.pdf', idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Jane Smith', appliedPosition: 'UI/UX Designer', skills: 'Figma, Sketch, Adobe XD', resume: 'Resume.docx' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg'},
-    { name: 'Michael Johnson', appliedPosition: 'DevOps Engineer', skills: 'AWS, Docker, Kubernetes', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Amy Brown', appliedPosition: 'Data Scientist', skills: 'Python, R, SQL', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'David Wilson', appliedPosition: 'Product Manager', skills: 'Agile, Scrum, Jira', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Sarah Lee', appliedPosition: 'Marketing Specialist', skills: 'SEO, Content Marketing', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Chris White', appliedPosition: 'Backend Developer', skills: 'Java, Spring, MongoDB', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Emily Green', appliedPosition: 'HR Specialist', skills: 'Employee Relations, Recruitment', resume: 'Resume.docx' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Jason Miller', appliedPosition: 'Frontend Developer', skills: 'HTML, CSS, JavaScript', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Linda Harris', appliedPosition: 'QA Engineer', skills: 'Manual Testing, Automation', resume: 'Resume.docx', idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'Mark Lee', appliedPosition: 'Data Analyst', skills: 'Excel, Tableau, SQL', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg'},
-    { name: 'Patricia Clark', appliedPosition: 'Project Manager', skills: 'PMP, Risk Management', resume: 'Resume.docx', idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-    { name: 'William Turner', appliedPosition: 'Product Designer', skills: 'Prototyping, Wireframing', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg'},
-    { name: 'Olivia Adams', appliedPosition: 'Software Developer', skills: 'JavaScript, TypeScript', resume: 'Resume.pdf' , idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg'},
-    { name: 'James Scott', appliedPosition: 'Business Analyst', skills: 'Business Modeling, SQL', resume: 'Resume.pdf', idFront: '/src/assets/idfront.jpg', idBack: '/src/assets/idback.jpg' },
-  ];
+const AdminApplicantTable = () => {
+  const navigate = useNavigate();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [applicants, setApplicants] = useState(applicantsData);
-  const itemsPerPage = 10;
-
-  const navigate = useNavigate();  // Initialize useNavigate
-
-  const totalItems = applicants.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  const filteredData = applicants.filter((applicant) =>
-    applicant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    applicant.appliedPosition.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    applicant.skills.toLowerCase().includes(searchQuery.toLowerCase())
+  // Sample data for applicants
+  const initialData = React.useMemo(
+    () => [
+      {
+        name: 'John Doe',
+        appliedPosition: 'Software Engineer',
+        skills: 'JavaScript, React, Node.js',
+        contact: '+1234567890',
+        email: 'johndoe@example.com',
+        dob: '1990-01-01',
+        nationality: 'American',
+        gender: 'Male',
+        maritalStatus: 'Single',
+        experience: '3 years',
+        education: 'B.Sc. Computer Science',
+        idFront: 'path/to/front-id.jpg', // Example URL
+        idBack: 'path/to/back-id.jpg',   // Example URL
+        resume: 'johndoe_resume.pdf',    // Example document
+      },
+      {
+        name: 'Jane Smith',
+        appliedPosition: 'Frontend Developer',
+        skills: 'HTML, CSS, JavaScript, Angular',
+        contact: '+0987654321',
+        email: 'janesmith@example.com',
+        dob: '1992-05-15',
+        nationality: 'Canadian',
+        gender: 'Female',
+        maritalStatus: 'Married',
+        experience: '2 years',
+        education: 'B.A. Design',
+        idFront: 'path/to/front-id2.jpg', // Example URL
+        idBack: 'path/to/back-id2.jpg',   // Example URL
+        resume: 'janesmith_resume.pdf',   // Example document
+      },
+      // Add more sample data as needed
+    ],
+    []
   );
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const [applicantData, setApplicantData] = React.useState(initialData);
+  const [searchQuery, setSearchQuery] = React.useState('');
 
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // Filter data based on the search query
+  const filteredData = React.useMemo(() => {
+    return applicantData.filter((applicant) => {
+      return (
+        applicant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        applicant.appliedPosition.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        applicant.skills.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+  }, [searchQuery, applicantData]);
 
-  // Handle row click and navigate to preview page
-  const handleRowClick = (applicant) => {
-    navigate('/adminapplicants/applicantdetailspreview', { state: { applicant } });  
+  // Columns configuration
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Applied Position',
+        accessor: 'appliedPosition',
+      },
+      {
+        Header: 'Skills',
+        accessor: 'skills',
+      },
+      {
+        Header: 'Action',
+        // Define a custom cell for the Action column with a delete button
+        Cell: ({ row }) => (
+          <button
+            onClick={() => handleDelete(row.index)}
+            className="btn btn-danger btn-sm"
+          >
+            <FaTrashAlt />
+          </button>
+        ),
+      },
+    ],
+    []
+  );
+
+  // Delete handler function
+  const handleDelete = (index) => {
+    setApplicantData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
-  // Function to handle deleting an applicant
-  const handleDelete = (name) => {
-    const updatedApplicants = applicants.filter((applicant) => applicant.name !== name);
-    setApplicants(updatedApplicants);
+  // Use the useTable hook to create the table instance
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data: filteredData, // Use filtered data here
+  });
+
+  // Handle row click to navigate to the applicant preview page
+  const handleRowClick = (rowData) => {
+    navigate('/adminapplicants/applicantdetailspreview', {
+      state: { applicant: rowData },
+    });
   };
 
   return (
-    <div>
-      {/* Search Bar Component */}
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+    <div className="container-fluid">
+      <h1 className="h3">Applicants</h1>
+      <p>
+        The table below displays applicants with their respective applied positions, skills, and action to delete their entries.
+      </p>
 
-      <table className="table table-hover" style={{ width: '130%', tableLayout: 'fixed', marginBottom: '20px', marginLeft: '-140px' }}>
-      <thead>
-        <tr>
-          <th style={{ width: '40%' }}>Applicant</th>
-          <th style={{ width: '35%' }}>Applied Position</th>
-          <th style={{ width: '25%' }}>Action</th> {/* Action Column */}
-        </tr>
-      </thead>
-      <tbody>
-        {currentItems.map((applicant, index) => (
-          <tr key={index} onClick={() => handleRowClick(applicant)} style={{ cursor: 'pointer' }}>
-            <td style={{ width: '40%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', textAlign: 'left' }}>
-                <img
-                  src="/src/assets/logo jobsync2.png"
-                  alt="Logo"
-                  style={{ width: '50px', height: '50px', objectFit: 'cover', marginRight: '10px', borderRadius: '50%' }}
-                />
-                <div>
-                  <div>{applicant.name}</div>
-                  <div>{applicant.skills}</div>
-                </div>
-              </div>
-            </td>
-            <td style={{ width: '35%' }}>{applicant.appliedPosition}</td>
-            <td style={{ width: '25%' }}>
-              <i
-                className="fas fa-trash-alt"
-                style={{ color: 'red', cursor: 'pointer' }}
-                onClick={(e) => {
-                  e.stopPropagation();  // Prevent row click event from firing
-                  handleDelete(applicant.name);
-                }}
-              ></i>
-            </td>
-          </tr>
-        ))}
-      </tbody>
+      {/* Search Filter */}
+      <div className="mb-3">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search applicants by name, position, or skills"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
 
-      </table>
-
-      <Pagination
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        totalItems={filteredData.length}
-        paginate={paginate}
-      />
+      <div className="card shadow">
+        <div className="card-header py-3">
+          <h6 className="m-0 font-weight-bold text-primary">Applicants Table</h6>
+        </div>
+        <div className="card-body">
+          <div className="table-responsive">
+            <table className="table table-bordered" {...getTableProps()} width="100%" cellspacing="0">
+              <thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>Name</th>
+                  <th>Applied Position</th>
+                  <th>Skills</th>
+                  <th>Action</th>
+                </tr>
+              </tfoot>
+              <tbody {...getTableBodyProps()}>
+                {rows.map((row) => {
+                  prepareRow(row);
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      onClick={() => handleRowClick(row.original)} 
+                      style={{ cursor: 'pointer' }} 
+                    >
+                      {row.cells.map((cell) => {
+                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
+                      })}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default ApplicantTable;
+export default AdminApplicantTable;

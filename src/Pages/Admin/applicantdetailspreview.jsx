@@ -1,12 +1,11 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import AdminSidebar from "../../admincomponents/adminsidebar";
-import { FaUser, FaBriefcase, FaPhoneAlt, FaEnvelope, FaCalendarAlt, FaFlag, FaGenderless, FaGraduationCap, FaBusinessTime, FaHeart } from 'react-icons/fa';  // Add appropriate icons
+import AdminSidebar from '../../components/adminsidebar';
+import { FaUser, FaBriefcase, FaPhoneAlt, FaEnvelope, FaCalendarAlt, FaFlag, FaGenderless, FaHeart, FaBusinessTime, FaGraduationCap } from 'react-icons/fa';  // Add appropriate icons
 
 const ApplicantPreviewPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   
   // Add fallback in case location.state is null or undefined
   const { applicant } = location.state || {};  
@@ -19,224 +18,128 @@ const ApplicantPreviewPage = () => {
     { name: applicant.resume, type: 'pdf', url: `path/to/${applicant.resume}` }
   ];
 
-  const handleBackClick = () => {
-    navigate(-1); // This will navigate to the previous page
-  };
-
   return (
     <div className="d-flex" style={{ minHeight: "100vh", flexDirection: "row", position: 'relative' }}>
       {/* Sidebar */}
       <AdminSidebar />
-      
-      {/* Back Button */}
-      <button 
-        onClick={handleBackClick} 
-        style={{
-          position: 'absolute',
-          top: '-10px',
-          left: '-45px',
-          backgroundColor: 'transparent',
-          border: 'none',
-          fontSize: '20px',
-          color: '#007bff',
-          cursor: 'pointer',
-        }}
-      >
-        {/* SVG Left Arrow Icon */}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          style={{ marginRight: '10px' }}
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth="2" 
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-        Back
-      </button>
+
+      <style>
+        {`
+          body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+          }
+
+          #root {
+            position: fixed;
+            top: 0;
+            right: 0;
+            margin: 0;
+            left: -32px;
+            min-width: 100%;
+          }
+        `}
+      </style>
 
       {/* Main Content */}
       <motion.div
         style={{ 
           flex: '1 1 70%', // Adjusted width to 70% of the available space
+          maxWidth: '900px', // Added max width to prevent the card from becoming too wide
+          margin: '50px auto', // Centering the content horizontally and adding top margin for spacing
           padding: '30px', 
-          borderRadius: '8px', 
-          boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
+          borderRadius: '12px', // Rounded corners for the card look
+          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.1)', // Added shadow to make it look like a floating card
           textAlign: 'left',
+          backgroundColor: '#fff', // White background to match the card style
           minHeight: 'auto', // Allow height to adjust based on content
         }}
         initial={{ y: 50, opacity: 0 }}  
         animate={{ y: 0, opacity: 1 }}    
         transition={{ duration: 0.8 }}     
       >
-        <h2 style={{ fontSize: '24px', color: '#333', marginBottom: '30px' }}>Applicant Details</h2>
+        <h2 style={{ fontSize: '28px', color: '#333', marginBottom: '40px' }}>Applicant Details</h2>
 
         {/* Applicant Details Section */}
         <div 
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)', // 2 columns layout
-            gap: '20px',
+            gap: '30px', // Increased the gap between the two columns
+            marginBottom: '40px', // Space between the applicant details and the next section
           }}
         >
           {/* Applicant Details */}
           <div 
             style={{
-              padding: '20px',
+              padding: '25px',
               borderRadius: '8px',
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              backgroundColor: '#f9f9f9', // Added light background to differentiate sections
             }}
           >
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaUser style={{ marginRight: '10px' }} /> <strong>Name:</strong> {applicant.name}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaBriefcase style={{ marginRight: '10px' }} /> <strong>Applied Position:</strong> {applicant.appliedPosition}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaPhoneAlt style={{ marginRight: '10px' }} /> <strong>Contact Number:</strong> {applicant.contact}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaEnvelope style={{ marginRight: '10px' }} /> <strong>Email:</strong> {applicant.email}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaCalendarAlt style={{ marginRight: '10px' }} /> <strong>Date of Birth:</strong> {applicant.dob}
             </p>
           </div>
 
           <div 
             style={{
-              padding: '20px',
+              padding: '25px',
               borderRadius: '8px',
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              backgroundColor: '#f9f9f9', // Added light background to differentiate sections
             }}
           >
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaFlag style={{ marginRight: '10px' }} /> <strong>Nationality:</strong> {applicant.nationality}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaGenderless style={{ marginRight: '10px' }} /> <strong>Gender:</strong> {applicant.gender}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaHeart style={{ marginRight: '10px' }} /> <strong>Marital Status:</strong> {applicant.maritalStatus}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaBusinessTime style={{ marginRight: '10px' }} /> <strong>Experience:</strong> {applicant.experience}
             </p>
-            <p style={{ marginBottom: '5px', display: 'flex', alignItems: 'center' }}>
+            <p style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', fontSize: '18px' }}>
               <FaGraduationCap style={{ marginRight: '10px' }} /> <strong>Education:</strong> {applicant.education}
             </p>
-          </div>
-        </div>
-
-        {/* ID Preview Section */}
-        <div 
-          style={{
-            padding: '20px',
-            marginBottom: '20px',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <h4 style={{ fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '15px', marginTop: '20px' }}>Uploaded ID Preview</h4>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
-            {/* Front ID */}
-            <div 
-              style={{
-                width: '48%', 
-                height: '250px', 
-                border: '2px dashed #007bff', 
-                borderRadius: '8px', 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                position: 'relative',
-                backgroundColor: '#f5f5f5',
-                minHeight: '250px', // Ensure the container maintains height
-              }}
-            >
-              <span style={{
-                fontSize: '18px', 
-                color: '#888', 
-                fontWeight: 'bold',
-                position: 'absolute'
-              }}>
-                Front ID
-              </span>
-              <img 
-                src={applicant.idFront} 
-                alt="ID Front" 
-                style={{
-                  width: '100%', 
-                  height: '100%', 
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  opacity: applicant.idFront ? 1 : 0, // Hide the image if not available
-                }} 
-              />
-            </div>
-            
-            {/* Back ID */}
-            <div 
-              style={{
-                width: '48%', 
-                height: '250px', 
-                border: '2px dashed #007bff', 
-                borderRadius: '8px', 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                position: 'relative',
-                backgroundColor: '#f5f5f5',
-                minHeight: '250px', // Ensure the container maintains height
-              }}
-            >
-              <span style={{
-                fontSize: '18px', 
-                color: '#888', 
-                fontWeight: 'bold',
-                position: 'absolute'
-              }}>
-                Back ID
-              </span>
-              <img 
-                src={applicant.idBack} 
-                alt="ID Back" 
-                style={{
-                  width: '100%', 
-                  height: '100%',  
-                  objectFit: 'cover',
-                  borderRadius: '8px',
-                  opacity: applicant.idBack ? 1 : 0, // Hide the image if not available
-                }} 
-              />
-            </div>
           </div>
         </div>
 
         {/* Document Attached Section */}
         <div
           style={{
-            padding: '20px',
-            marginBottom: '20px',
+            padding: '25px',
+            marginBottom: '40px', // Added margin bottom for spacing between sections
             borderRadius: '8px',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', 
             backgroundColor: '#f9f9f9'
           }}
         >
-          <h4 style={{ fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '15px', marginTop: '25px' }}>Documents Attached</h4>
+          <h4 style={{ fontSize: '24px', fontWeight: '600', color: '#333', marginBottom: '20px' }}>Documents Attached</h4>
           <div 
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              gap: '20px',
+              gap: '30px', // Increased the gap between document items
               flexWrap: 'wrap'  
             }}
           >
@@ -247,11 +150,11 @@ const ApplicantPreviewPage = () => {
                   display: 'flex', 
                   alignItems: 'center', 
                   width: '48%', 
-                  marginBottom: '15px' 
+                  marginBottom: '25px' // Added margin to separate document items
                 }}
               >
                 {/* Display Icon based on file type */}
-                <div style={{ marginRight: '15px' }}>
+                <div style={{ marginRight: '20px' }}>
                   {doc.type === 'pdf' ? (
                     <img 
                       src="/src/assets/pdf.png" 
@@ -269,13 +172,13 @@ const ApplicantPreviewPage = () => {
                 
                 {/* File Name and Type */}
                 <div>
-                  <p style={{ margin: 0 }}>
+                  <p style={{ margin: 0, fontSize: '16px' }}>
                     <strong>{doc.name}</strong> 
                     <span style={{ color: '#888', marginLeft: '5px' }}>(
                       {doc.type === 'pdf' ? 'PDF' : 'Image'}
                     )</span>
                   </p>
-                  <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff' }}>
+                  <a href={doc.url} target="_blank" rel="noopener noreferrer" style={{ color: '#007bff', fontSize: '16px' }}>
                     View File
                   </a>
                 </div>

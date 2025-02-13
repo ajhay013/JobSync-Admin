@@ -19,8 +19,8 @@ const Header = ({ username }) => {
     >
       {/* Logo and title */}
       <div className="d-flex align-items-center mb-5 mt-5" style={{ marginLeft: '10px' }}>
-        <img src="/src/assets/logo jobsync2.png" alt="Logo" style={{ width: "50px" }} />
-        <h4 className="ml-2 ms-2" style={{fontWeight: '600'}}>JobSync</h4>
+        <img src="/src/assets/logo3.png" alt="Logo" style={{ width: "50px" }} />
+        <h2 className="ml-2">JobSync</h2>
       </div>
 
       {/* User info section */}
