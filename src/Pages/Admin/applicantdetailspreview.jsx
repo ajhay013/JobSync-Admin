@@ -30,16 +30,30 @@ const ApplicantPreviewPage = () => {
             padding: 0;
             height: 100%;
             width: 100%;
-            display: flex;
           }
-
-          #root {
+          #page-top {
+            min-width: 100%;
             position: fixed;
             top: 0;
-            right: 0;
-            margin: 0;
-            left: -32px;
-            min-width: 100%;
+            left: 0;
+          }
+         #root {
+              position: fixed;
+              right: 0;
+              margin: 0;
+              left: -32px;
+              min-width: 100%;
+          }
+            
+          #wrapper {
+            display: flex;
+            height: 100vh;
+          }
+          #content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
           }
         `}
       </style>
@@ -52,7 +66,7 @@ const ApplicantPreviewPage = () => {
           margin: '50px auto', // Centering the content horizontally and adding top margin for spacing
           padding: '30px', 
           borderRadius: '12px', // Rounded corners for the card look
-          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.1)', // Added shadow to make it look like a floating card
+          boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset', // Added shadow to make it look like a floating card
           textAlign: 'left',
           backgroundColor: '#fff', // White background to match the card style
           minHeight: 'auto', // Allow height to adjust based on content

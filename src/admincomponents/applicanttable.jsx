@@ -21,9 +21,7 @@ const AdminApplicantTable = () => {
         maritalStatus: 'Single',
         experience: '3 years',
         education: 'B.Sc. Computer Science',
-        idFront: 'path/to/front-id.jpg', // Example URL
-        idBack: 'path/to/back-id.jpg',   // Example URL
-        resume: 'johndoe_resume.pdf',    // Example document
+        resume: 'johndoe_resume.pdf',   
       },
       {
         name: 'Jane Smith',
@@ -37,9 +35,7 @@ const AdminApplicantTable = () => {
         maritalStatus: 'Married',
         experience: '2 years',
         education: 'B.A. Design',
-        idFront: 'path/to/front-id2.jpg', // Example URL
-        idBack: 'path/to/back-id2.jpg',   // Example URL
-        resume: 'janesmith_resume.pdf',   // Example document
+        resume: 'janesmith_resume.pdf',   
       },
       // Add more sample data as needed
     ],
@@ -48,6 +44,9 @@ const AdminApplicantTable = () => {
 
   const [applicantData, setApplicantData] = React.useState(initialData);
   const [searchQuery, setSearchQuery] = React.useState('');
+
+  // Hover state for rows
+  const [hoveredRowIndex, setHoveredRowIndex] = React.useState(null);
 
   // Filter data based on the search query
   const filteredData = React.useMemo(() => {
@@ -111,20 +110,23 @@ const AdminApplicantTable = () => {
 
   return (
     <div className="container-fluid">
-      <h1 className="h3">Applicants</h1>
-      <p>
+      <h1 className="h3" style={{ textAlign: 'left' }}>Applicants</h1>
+      <p style={{ textAlign: 'left' }}>
         The table below displays applicants with their respective applied positions, skills, and action to delete their entries.
       </p>
 
       {/* Search Filter */}
       <div className="mb-3">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Search applicants by name, position, or skills"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+        <div style={{ maxWidth: '300px', marginBottom: '15px' }}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ width: '100%' }}
+          />
+        </div>
       </div>
 
       <div className="card shadow">
@@ -138,7 +140,9 @@ const AdminApplicantTable = () => {
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
                     {headerGroup.headers.map((column) => (
-                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                      <th {...column.getHeaderProps()}>
+                        {column.render('Header')}
+                      </th>
                     ))}
                   </tr>
                 ))}
@@ -152,13 +156,21 @@ const AdminApplicantTable = () => {
                 </tr>
               </tfoot>
               <tbody {...getTableBodyProps()}>
-                {rows.map((row) => {
+                {rows.map((row, index) => {
                   prepareRow(row);
+                  const isHovered = index === hoveredRowIndex; // Check if this row is hovered
                   return (
                     <tr
                       {...row.getRowProps()}
-                      onClick={() => handleRowClick(row.original)} 
-                      style={{ cursor: 'pointer' }} 
+                      onClick={() => handleRowClick(row.original)}
+                      onMouseEnter={() => setHoveredRowIndex(index)} // Set hover state
+                      onMouseLeave={() => setHoveredRowIndex(null)} // Reset hover state
+                      style={{
+                        cursor: 'pointer',
+                        backgroundColor: isHovered ? '#007bff' : '#007bff', 
+                        color: 'white', 
+                        transition: 'background-color 0.3s ease', 
+                      }}
                     >
                       {row.cells.map((cell) => {
                         return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
