@@ -141,10 +141,8 @@ const Sidebar = () => {
                         </div>
                     </div>
                 </li>
-
                 {/* Divider */}
                 <hr className="sidebar-divider" />
-
                 {/* Heading */}
                 <div className="sidebar-heading">
                     Addons
