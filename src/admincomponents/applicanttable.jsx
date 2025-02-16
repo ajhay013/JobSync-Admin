@@ -1,48 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTable } from 'react-table';
 import { FaTrashAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import Breadcrumbs from '../components/BreadCumbs';
+import { postToEndpoint } from '../components/apiService'
 
 const AdminApplicantTable = () => {
   const navigate = useNavigate();
+  const [applicants, setApplicants] = useState([]);
 
-  // Sample data for applicants
-  const initialData = React.useMemo(
-    () => [
-      {
-        name: 'John Doe',
-        appliedPosition: 'Software Engineer',
-        skills: 'JavaScript, React, Node.js',
-        contact: '+1234567890',
-        email: 'johndoe@example.com',
-        dob: '1990-01-01',
-        nationality: 'American',
-        gender: 'Male',
-        maritalStatus: 'Single',
-        experience: '3 years',
-        education: 'B.Sc. Computer Science',
-        resume: 'johndoe_resume.pdf',   
-      },
-      {
-        name: 'Jane Smith',
-        appliedPosition: 'Frontend Developer',
-        skills: 'HTML, CSS, JavaScript, Angular',
-        contact: '+0987654321',
-        email: 'janesmith@example.com',
-        dob: '1992-05-15',
-        nationality: 'Canadian',
-        gender: 'Female',
-        maritalStatus: 'Married',
-        experience: '2 years',
-        education: 'B.A. Design',
-        resume: 'janesmith_resume.pdf',   
-      },
-      // Add more sample data as needed
-    ],
-    []
-  );
+  useEffect(() => {
+    const fetchApplicants = async () => {
+        try {
+            const response = await postToEndpoint('/findApplicant.php');
+            if (response.data.applicants) {
+                console.log(response.data.applicants)
+                setApplicants(response.data.applicants);
+            } else {
+                console.error('No jobs found or an error occurred:', response.data.error);
+            }
+        } catch (error) {
+            console.error('Error fetching jobs:', error);
+        }
+    };
+    fetchApplicants();
+  }, []);
 
-  const [applicantData, setApplicantData] = React.useState(initialData);
+  const [applicantData, setApplicantData] = useState([]);
+
+  useEffect(() => {
+    setApplicantData(applicants);
+  }, [applicants]);
+
   const [searchQuery, setSearchQuery] = React.useState('');
 
   // Hover state for rows
@@ -52,31 +41,53 @@ const AdminApplicantTable = () => {
   const filteredData = React.useMemo(() => {
     return applicantData.filter((applicant) => {
       return (
-        applicant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        applicant.appliedPosition.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        applicant.skills.toLowerCase().includes(searchQuery.toLowerCase())
+        (applicant.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+        (applicant.appliedPosition?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+        (applicant.skills?.toLowerCase() || '').includes(searchQuery.toLowerCase())
       );
     });
   }, [searchQuery, applicantData]);
+  
 
   // Columns configuration
   const columns = React.useMemo(
     () => [
       {
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'firstname',
+        Cell: ({ row }) => `${row.original.firstname} ${row.original.middlename} ${row.original.lastname}`
       },
       {
-        Header: 'Applied Position',
-        accessor: 'appliedPosition',
+        Header: 'Email',
+        accessor: 'email',
       },
       {
-        Header: 'Skills',
-        accessor: 'skills',
+        Header: 'Contact',
+        accessor: 'contact',
+      },
+      {
+        Header: 'Attainment',
+        accessor: 'attainment',
+      },
+      {
+        Header: 'Date of Birth',
+        accessor: 'birthday', 
+        Cell: ({ value }) => {
+          if (!value) return '';  
+          const date = new Date(value);
+          return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          });
+        }
+      },
+      {
+        Header: 'City',
+        accessor: 'city',
       },
       {
         Header: 'Action',
-        // Define a custom cell for the Action column with a delete button
         Cell: ({ row }) => (
           <button
             onClick={() => handleDelete(row.index)}
@@ -90,18 +101,16 @@ const AdminApplicantTable = () => {
     []
   );
 
-  // Delete handler function
   const handleDelete = (index) => {
     setApplicantData((prevData) => prevData.filter((_, i) => i !== index));
   };
 
-  // Use the useTable hook to create the table instance
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
-    data: filteredData, // Use filtered data here
+    data: filteredData,
   });
 
-  // Handle row click to navigate to the applicant preview page
+
   const handleRowClick = (rowData) => {
     navigate('/adminapplicants/applicantdetailspreview', {
       state: { applicant: rowData },
@@ -109,10 +118,17 @@ const AdminApplicantTable = () => {
   };
 
   return (
+    <>                
     <div className="container-fluid">
-      <h1 className="h3" style={{ textAlign: 'left' }}>Applicants</h1>
+      <Breadcrumbs
+        title="Applicant Details"
+        links={[
+          { label: "Dashboard", href: "/admindashboard" },
+          { label: "Applicants", active: true },
+        ]}
+      />
       <p style={{ textAlign: 'left' }}>
-        The table below displays applicants with their respective applied positions, skills, and action to delete their entries.
+        The table below displays applicants with their names, email, contact, and action to delete their entries.
       </p>
 
       {/* Search Filter */}
@@ -135,55 +151,57 @@ const AdminApplicantTable = () => {
         </div>
         <div className="card-body">
           <div className="table-responsive">
-            <table className="table table-bordered" {...getTableProps()} width="100%" cellspacing="0">
-              <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
-                    {headerGroup.headers.map((column) => (
-                      <th {...column.getHeaderProps()}>
-                        {column.render('Header')}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
+          <table className="table table-bordered" {...getTableProps()} width="100%" cellSpacing="0">
+            <thead>
+              {headerGroups.map((headerGroup, id) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={id}>
+                  {headerGroup.headers.map((column) => (
+                    <th {...column.getHeaderProps()} key={column.id}>
+                      {column.render('Header')}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
               <tfoot>
                 <tr>
                   <th>Name</th>
-                  <th>Applied Position</th>
-                  <th>Skills</th>
+                  <th>Email</th>
+                  <th>Contact</th>
+                  <th>Attainment</th>  
+                  <th>Date of Birth</th>  
+                  <th>Marital Status</th>  
                   <th>Action</th>
                 </tr>
               </tfoot>
               <tbody {...getTableBodyProps()}>
                 {rows.map((row, index) => {
                   prepareRow(row);
-                  const isHovered = index === hoveredRowIndex; // Check if this row is hovered
                   return (
-                    <tr
-                      {...row.getRowProps()}
-                      onClick={() => handleRowClick(row.original)}
-                      onMouseEnter={() => setHoveredRowIndex(index)} // Set hover state
-                      onMouseLeave={() => setHoveredRowIndex(null)} // Reset hover state
-                      style={{
-                        cursor: 'pointer',
-                        backgroundColor: isHovered ? '#007bff' : '#007bff', 
-                        color: 'white', 
-                        transition: 'background-color 0.3s ease', 
-                      }}
-                    >
-                      {row.cells.map((cell) => {
-                        return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-                      })}
+                    <tr {...row.getRowProps()} key={row.id}
+                        onClick={() => handleRowClick(row.original)}
+                        onMouseEnter={() => setHoveredRowIndex(index)}
+                        onMouseLeave={() => setHoveredRowIndex(null)}
+                        style={{
+                          cursor: 'pointer',
+                          backgroundColor: index === hoveredRowIndex ? '#007bff' : '#007bff', 
+                          color: 'white', 
+                          transition: 'background-color 0.3s ease', 
+                        }}>
+                      {row.cells.map((cell, cellIndex) => (
+                        <td {...cell.getCellProps()} key={cell.column.id}>{cell.render('Cell')}</td>
+                      ))}
                     </tr>
                   );
                 })}
               </tbody>
+
             </table>
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 };
 

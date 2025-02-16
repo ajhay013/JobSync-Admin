@@ -28,7 +28,7 @@ export default function AdminLogin() {
           }
 
           .wrapper {
-              max-width: 350px;
+              width: 700px;
               min-height: 500px;
               margin: 80px auto;
               padding: 40px 30px 30px 30px;
@@ -123,7 +123,7 @@ export default function AdminLogin() {
       <div className="wrapper">
         <div className="logo">
           <img
-            src="https://via.placeholder.com/80"
+            src="/src/assets/logo jobsync2.png"
             alt="Admin Logo"
           />
         </div>
@@ -158,7 +158,7 @@ export default function AdminLogin() {
         </form>
 
         <div className="text-center fs-6">
-          <a href="#">Forgot password?</a> or <a href="#">Sign up</a>
+          <a href="#">Forgot password?</a>  
         </div>
       </div>
     </>

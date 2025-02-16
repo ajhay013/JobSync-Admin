@@ -4,6 +4,7 @@ import '../../admin.css';
 import AdminSidebar from '../../components/adminsidebar';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Topbar from '../../components/Navigation';
 
 export default function AdminApplicants() {
     const username = "Adminser"; 
@@ -36,6 +37,7 @@ export default function AdminApplicants() {
           #wrapper {
             display: flex;
             height: 100vh;
+            width: 100vw;
           }
           #content-wrapper {
             flex: 1;
@@ -45,20 +47,16 @@ export default function AdminApplicants() {
           }
         `}
       </style>
-        
-            <div className="d-flex" style={{ height: "100vh", flexDirection: "row" }}>
+        <div id="wrapper" style={{ padding: 0 }}>
+              <AdminSidebar />
+        <div id="content-wrapper" className="d-flex flex-column">
+            <div id="content" style={{ width: "100%", margin: "0" }}>
                 {/* Include Sidebar */}
-                <AdminSidebar />
-
-                {/* Main Content */}
-                <div className="flex-grow-1 p-4" style={{ backgroundColor: "transparent" }}>
-                    {/* Include Header */}
-                    {/* <AdminHeader username={username} /> */}
-                    
-                    {/* Include the ApplicantTable here */}
-                    <ApplicantTable />
-                </div>
+                <Topbar />
+                <ApplicantTable />
             </div>
+          </div>
+        </div>
         </>
     );
 }

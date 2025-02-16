@@ -2,6 +2,7 @@ import React from 'react';
 import { useTable } from 'react-table';
 import { FaTrashAlt } from 'react-icons/fa'; // Importing trash icon from react-icons
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import Breadcrumbs from '../components/BreadCumbs';
 
 const EmployerTable = () => {
   const navigate = useNavigate(); // Initialize navigate function
@@ -50,12 +51,20 @@ const EmployerTable = () => {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Employer Name',  // Renamed from Authorized Representative to Employer Name
+        Header: 'Authorized Representative',  // Renamed from Authorized Representative to Employer Name
         accessor: 'name',         // Changed from 'representative' to 'name'
       },
       {
-        Header: 'Company',
-        accessor: 'company',
+        Header: 'Email',
+        accessor: 'email',
+      },
+      {
+        Header: 'Designation',
+        accessor: 'position',
+      },
+      {
+        Header: 'Contact',
+        accessor: 'contact',
       },
       {
         Header: 'Action',
@@ -72,25 +81,27 @@ const EmployerTable = () => {
     []
   );
 
-  // Delete handler function
   const handleDelete = (index) => {
     setRepresentativeData((prevData) => prevData.filter((_, i) => i !== index));
   };
-
-  // Handle row click to navigate to another page and pass data via state
   const handleRowClick = (rowData) => {
     navigate('/adminemployers/employerdetailspreview', { state: { employer: rowData } });
   };
 
-  // Use the useTable hook to create the table instance
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
-    data: filteredData,  // Use filtered data here
+    data: filteredData,   
   });
 
   return (
     <div className="container-fluid">
-      <h1 className="h3 mb-2 text-gray-800" style={{ textAlign: 'left' }}>Employers Table</h1>
+      <Breadcrumbs
+        title="Authorized Representative"
+        links={[
+          { label: "Dashboard", href: "/admindashboard" },
+          { label: "Authorized Representative", active: true },
+        ]}
+      />
       <p className="mb-4" style={{ textAlign: 'left' }}>
         The table below displays authorized representatives with their respective companies, and an action to delete their entries.
       </p>
@@ -111,7 +122,7 @@ const EmployerTable = () => {
       {/* DataTable Example */}
       <div className="card shadow mb-4">
         <div className="card-header py-3">
-          <h6 className="m-0 font-weight-bold text-primary">Employers Table</h6>
+          <h6 className="m-0 font-weight-bold text-primary">Authorized Representative Table</h6>
         </div>
         <div className="card-body">
           <div className="table-responsive">
@@ -125,6 +136,15 @@ const EmployerTable = () => {
                   </tr>
                 ))}
               </thead>
+              <tfoot>
+                <tr>
+                  <th>Authorized Representative</th>
+                  <th>Email</th>
+                  <th>Designation</th>
+                  <th>Contact</th>
+                  <th>Action</th>
+                </tr>
+              </tfoot>
               <tbody {...getTableBodyProps()}>
                 {rows.map((row) => {
                   prepareRow(row);

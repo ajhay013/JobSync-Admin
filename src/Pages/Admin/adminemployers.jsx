@@ -2,14 +2,14 @@
 import React from 'react';
 import AdminSidebar from '../../components/adminsidebar';
 import EmployerTable from '../../admincomponents/employertable'; 
+import Topbar from '../../components/Navigation';
 
 const username = "AdminUser";
 
 export default function AdminEmployers() {
   return (
 
-    
-    <div className="d-flex" style={{ height: "100vh", flexDirection: "row" }}>
+    <>
       <style>
         {`
           body, html {
@@ -35,6 +35,7 @@ export default function AdminEmployers() {
           #wrapper {
             display: flex;
             height: 100vh;
+            width: 100vw;
           }
           #content-wrapper {
             flex: 1;
@@ -44,14 +45,16 @@ export default function AdminEmployers() {
           }
         `}
       </style>
-      {/* Include Sidebar */}
-      <AdminSidebar />
-
-      {/* Main Content */}
-      <div className="flex-grow-1 p-4" style={{ backgroundColor: "transparent" }}>
-        {/* Employer Table */}
-        <EmployerTable />
-      </div>
-    </div>
+      <div id="wrapper" style={{ padding: 0 }}>
+              <AdminSidebar />
+        <div id="content-wrapper" className="d-flex flex-column">
+            <div id="content" style={{ width: "100%", margin: "0" }}>
+                {/* Include Sidebar */}
+                <Topbar />
+                <EmployerTable />
+            </div>
+          </div>
+        </div>
+          </>
   );
 }

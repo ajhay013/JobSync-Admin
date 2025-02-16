@@ -101,7 +101,7 @@ const Sidebar = () => {
                         onClick={() => setCollapseTwo(!collapseTwo)}
                         aria-expanded={collapseTwo ? "true" : "false"}
                     >
-                        <span><i className="fas fa-fw fa-table"></i> Tables</span>
+                        <span><i className="fas fa-fw fa-table"></i>User Tables</span>
                         <i className={`fas fa-chevron-${collapseTwo ? 'up' : 'down'}`}></i>
                     </button>
                     <div 
@@ -110,32 +110,34 @@ const Sidebar = () => {
                     >
                         <h6 className="collapse-header" >USER TABLES</h6>
                         <div className="d-flex flex-column">
-                            <Link className="collapse-item" to="/adminapplicants">Applicants</Link>
-                            <Link className="collapse-item" to="/adminemployers">Employers</Link>
+                            <Link className="collapse-item mb-1" to="/adminapplicants">Applicants</Link>
+                            <Link className="collapse-item" to="/adminemployers">Representative</Link>
                         </div>
                     </div>
                 </li>
-
-                {/* Nav Item - Utilities */}
+                
+                {/* Nav Item - Pages */}
                 <li className="nav-item">
                     <button
                         className="nav-link collapsed d-flex justify-content-between"
-                        onClick={() => setCollapseUtilities(!collapseUtilities)}
-                        aria-expanded={collapseUtilities ? "true" : "false"}
+                        onClick={() => setCollapsePages(!collapsePages)}
+                        aria-expanded={collapsePages ? "true" : "false"}
                     >
-                        <span><i className="fas fa-fw fa-wrench"></i> Utilities</span>
-                        <i className={`fas fa-chevron-${collapseUtilities ? 'up' : 'down'}`}></i>
+                        <span><i className="fas fa-fw fa-briefcase"></i>Companies</span>
+                        <i className={`fas fa-chevron-${collapsePages ? 'up' : 'down'}`}></i>
                     </button>
                     <div 
                         className={`bg-white collapse-inner rounded`} 
-                        style={getCollapseStyle(collapseUtilities)}
+                        style={getCollapseStyle(collapsePages)}
                     >
-                        <h6 className="collapse-header">Custom Utilities</h6>
+                        <h6 className="collapse-header" style={{ textAlign: 'left' , marginLeft: '10px' }}>Companies Table</h6>
                         <div className="d-flex flex-column">
-                            <Link className="collapse-item" to="/utilities-color">Colors</Link>
-                            <Link className="collapse-item" to="/utilities-border">Borders</Link>
-                            <Link className="collapse-item" to="/utilities-animation">Animations</Link>
-                            <Link className="collapse-item" to="/utilities-other">Other</Link>
+                            <Link className="collapse-item mb-2" to="/login">Companies</Link>
+                        </div>
+                        <div className="collapse-divider"></div>
+                        <h6 className="collapse-header" style={{ textAlign: 'left' , marginLeft: '10px' }}>Jobs Table</h6>
+                        <div className="d-flex flex-column">
+                            <Link className="collapse-item" to="/404">Jobs</Link>
                         </div>
                     </div>
                 </li>
@@ -147,48 +149,37 @@ const Sidebar = () => {
                 <div className="sidebar-heading">
                     Addons
                 </div>
-
-                {/* Nav Item - Pages */}
+                {/* Nav Item - Utilities */}
                 <li className="nav-item">
                     <button
                         className="nav-link collapsed d-flex justify-content-between"
-                        onClick={() => setCollapsePages(!collapsePages)}
-                        aria-expanded={collapsePages ? "true" : "false"}
+                        onClick={() => setCollapseUtilities(!collapseUtilities)}
+                        aria-expanded={collapseUtilities ? "true" : "false"}
                     >
-                        <span><i className="fas fa-fw fa-briefcase"></i> Jobs</span>
-                        <i className={`fas fa-chevron-${collapsePages ? 'up' : 'down'}`}></i>
+                        <span><i className="fas fa-fw fa-wrench"></i> Customer Support</span>
+                        <i className={`fas fa-chevron-${collapseUtilities ? 'up' : 'down'}`}></i>
                     </button>
                     <div 
                         className={`bg-white collapse-inner rounded`} 
-                        style={getCollapseStyle(collapsePages)}
+                        style={getCollapseStyle(collapseUtilities)}
                     >
-                        <h6 className="collapse-header" style={{ textAlign: 'left' , marginLeft: '10px' }}>Login Screens</h6>
+                        <h6 className="collapse-header">Customer Support</h6>
                         <div className="d-flex flex-column">
-                            <Link className="collapse-item" to="/login">Login</Link>
-                            <Link className="collapse-item" to="/register">Register</Link>
-                            <Link className="collapse-item" to="/forgot-password">Forgot Password</Link>
-                        </div>
-                        <div className="collapse-divider"></div>
-                        <h6 className="collapse-header">Other Pages:</h6>
-                        <div className="d-flex flex-column">
-                            <Link className="collapse-item" to="/404">404 Page</Link>
-                            <Link className="collapse-item" to="/blank">Blank Page</Link>
+                            <Link className="collapse-item mb-1" to="/utilities-color">Email</Link>
+                            <Link className="collapse-item" to="/utilities-border">Accounts</Link>
                         </div>
                     </div>
                 </li>
 
-                {/* Nav Item - Charts */}
-                <li className="nav-item">
-                    <Link className="nav-link" to="/charts">
-                        <i className="fas fa-fw fa-chart-area"></i>
-                        <span>Charts</span>
-                    </Link>
-                </li>
+                <hr className="sidebar-divider" />
 
+                <div className="sidebar-heading">
+                Settings
+                </div>
                 <li className="nav-item">
                     <Link className="nav-link" to="/tables">
                         <i className="fas fa-fw fa-cog"></i>
-                        <span>Customer Support</span>
+                        <span>Settings</span>
                     </Link>
                 </li>
             </ul>
