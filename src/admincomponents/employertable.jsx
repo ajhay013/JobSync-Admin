@@ -33,6 +33,18 @@ const EmployerTable = () => {
   );
 
   const [representativeData, setRepresentativeData] = React.useState(initialData);
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+  // Filter data based on the search query
+  const filteredData = React.useMemo(() => {
+    return representativeData.filter((applicant) => {
+      return (
+        applicant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        applicant.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        applicant.company.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+  }, [searchQuery, representativeData]);
 
   // Columns configuration
   const columns = React.useMemo(
@@ -73,15 +85,28 @@ const EmployerTable = () => {
   // Use the useTable hook to create the table instance
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
     columns,
-    data: representativeData,
+    data: filteredData,  // Use filtered data here
   });
 
   return (
     <div className="container-fluid">
-      <h1 className="h3 mb-2 text-gray-800">Employers Table</h1>
-      <p className="mb-4">
+      <h1 className="h3 mb-2 text-gray-800" style={{ textAlign: 'left' }}>Employers Table</h1>
+      <p className="mb-4" style={{ textAlign: 'left' }}>
         The table below displays authorized representatives with their respective companies, and an action to delete their entries.
       </p>
+      {/* Search Filter */}
+      <div className="mb-3">
+        <div style={{ maxWidth: '300px', marginBottom: '15px' }}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{ width: '100%' }}
+          />
+        </div>
+      </div>
 
       {/* DataTable Example */}
       <div className="card shadow mb-4">
@@ -90,7 +115,7 @@ const EmployerTable = () => {
         </div>
         <div className="card-body">
           <div className="table-responsive">
-            <table className="table table-bordered" {...getTableProps()} width="100%" cellspacing="0">
+            <table className="table table-bordered" {...getTableProps()} width="100%" cellSpacing="0">
               <thead>
                 {headerGroups.map((headerGroup) => (
                   <tr {...headerGroup.getHeaderGroupProps()}>
@@ -100,13 +125,6 @@ const EmployerTable = () => {
                   </tr>
                 ))}
               </thead>
-              <tfoot>
-                <tr>
-                  <th>Employer Name</th>
-                  <th>Company</th>
-                  <th>Action</th>
-                </tr>
-              </tfoot>
               <tbody {...getTableBodyProps()}>
                 {rows.map((row) => {
                   prepareRow(row);

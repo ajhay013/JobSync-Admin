@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AdminSidebar from '../../components/adminsidebar';
-import { FaUser, FaBriefcase, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';  // Add appropriate icons
+import { FaUser, FaBriefcase, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
 
 const PreviewPage = () => {
   const location = useLocation();
@@ -29,16 +29,48 @@ const PreviewPage = () => {
             padding: 0;
             height: 100%;
             width: 100%;
-            display: flex;
           }
-
-          #root {
+          #page-top {
+            min-width: 100%;
             position: fixed;
             top: 0;
+            left: 0;
+          }
+          #root {
+            position: fixed;
             right: 0;
             margin: 0;
             left: -32px;
             min-width: 100%;
+          }
+          
+          #wrapper {
+            display: flex;
+            height: 100vh;
+          }
+          #content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+          }
+
+          /* Custom Scrollbar */
+          ::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+          }
+
+          ::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 10px;
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+            background: #0056b3;
           }
         `}
       </style>
@@ -46,15 +78,15 @@ const PreviewPage = () => {
       {/* Main Content */}
       <motion.div
         style={{
-          flex: 1,
+          flex: '1 1 70%',
           marginLeft: '240px',  // Adjust space for sidebar
           padding: '30px',
-          borderRadius: '8px',
+          borderRadius: '12px',
           boxShadow: 'rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset',
           textAlign: 'left',
           minHeight: 'auto',
           maxWidth: '1100px',  // Adjust max width for the content container
-          margin: '0 auto',  // Center the content horizontally
+          margin: '50px auto',  // Center the content horizontally
           overflowY: 'auto',  // Enables vertical scrolling when content overflows
           maxHeight: 'calc(100vh - 60px)', // Ensure the container doesn't overflow the viewport height
         }}
@@ -108,7 +140,7 @@ const PreviewPage = () => {
           }}
         >
           <h4 style={{ fontSize: '24px', fontWeight: '600', color: '#333', marginBottom: '30px', marginTop: '20px' }}>Uploaded ID Preview</h4>
-          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '30px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', gap: '30px' }} className="scrollable-content">
             {/* Front ID */}
             <div 
               style={{
@@ -129,7 +161,7 @@ const PreviewPage = () => {
                 color: '#888', 
                 fontWeight: 'bold',
                 position: 'absolute'
-              }}>
+              }} className="scrollable-content">
                 Front ID
               </span>
               <img 
@@ -165,7 +197,7 @@ const PreviewPage = () => {
                 color: '#888', 
                 fontWeight: 'bold',
                 position: 'absolute'
-              }}>
+              }} className="scrollable-content">
                 Back ID
               </span>
               <img 

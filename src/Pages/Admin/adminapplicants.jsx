@@ -13,27 +13,36 @@ export default function AdminApplicants() {
         <>  
         <style>
         {`
-
-         body, html {
+          body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            display: flex;
-         
           }
-
-
-          #root {
+          #page-top {
+            min-width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+          }
+         #root {
               position: fixed;
-              top: 0;
               right: 0;
               margin: 0;
               left: -32px;
               min-width: 100%;
           }
-        
-          
+            
+          #wrapper {
+            display: flex;
+            height: 100vh;
+          }
+          #content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+          }
         `}
       </style>
         

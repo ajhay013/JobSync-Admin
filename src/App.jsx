@@ -8,6 +8,7 @@ import AdminApplicants from './Pages/Admin/adminapplicants';
 import Dashboard from './Pages/Admin/AdminDashboard';
 import AdminEmployers from './Pages/Admin/adminemployers';
 import ApplicantPreviewPage from './Pages/Admin/applicantdetailspreview';
+import EmployerPreviewPage from './Pages/Admin/employerdetailspreview';
 
 function NotFound() {
   return <h2>404 - Page Not Found</h2>;
@@ -22,6 +23,7 @@ function Layout() {
       <Route path='/adminapplicants' element={<AdminApplicants />} />
       <Route path='/adminemployers' element={<AdminEmployers />} />
       <Route path='/adminapplicants/applicantdetailspreview' element={<ApplicantPreviewPage />} />
+      <Route path='/adminemployers/employerdetailspreview' element={<EmployerPreviewPage />} />
     </Routes>
   );
 }
