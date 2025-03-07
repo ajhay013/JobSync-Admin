@@ -132,12 +132,12 @@ const Sidebar = () => {
                     >
                         <h6 className="collapse-header" style={{ textAlign: 'left' , marginLeft: '10px' }}>Companies Table</h6>
                         <div className="d-flex flex-column">
-                            <Link className="collapse-item mb-2" to="/login">Companies</Link>
+                            <Link className="collapse-item mb-2" to="/admincompany">Companies</Link>
                         </div>
                         <div className="collapse-divider"></div>
                         <h6 className="collapse-header" style={{ textAlign: 'left' , marginLeft: '10px' }}>Jobs Table</h6>
                         <div className="d-flex flex-column">
-                            <Link className="collapse-item" to="/404">Jobs</Link>
+                            <Link className="collapse-item" to="/adminjobs">Jobs</Link>
                         </div>
                     </div>
                 </li>
