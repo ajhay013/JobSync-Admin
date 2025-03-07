@@ -66,7 +66,7 @@ const Sidebar = () => {
                     <Link to="/" className="d-flex align-items-center">
                         <div className="sidebar-brand-icon">
                             <img 
-                                src="/src/assets/logo3.png" 
+                                src="/assets/logo3.png" 
                                 alt="Brand Icon" 
                                 style={{ width: '40px', height: 'auto', filter: 'brightness(0) invert(1)' }} 
                             />

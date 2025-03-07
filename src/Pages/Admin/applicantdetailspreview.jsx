@@ -2,9 +2,9 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import AdminSidebar from '../../components/adminsidebar';
-import { FaUser, FaBriefcase, FaPhoneAlt, FaEnvelope, FaCalendarAlt, FaFlag, FaGenderless, FaHeart, FaBusinessTime, FaGraduationCap } from 'react-icons/fa';  // Add appropriate icons
+import { FaUser, FaBriefcase, FaPhoneAlt, FaEnvelope, FaCalendarAlt, FaFlag, FaTransgenderAlt, FaHeart, FaBusinessTime, FaGraduationCap } from 'react-icons/fa';  // Add appropriate icons
 import Topbar from '../../components/Navigation';
-import picture from '../../assets/berns.jpg'
+import picture from '../../assets/user_default.png'
 import Breadcrumbs from '../../components/BreadCumbs';
 
 const ApplicantPreviewPage = () => {
@@ -101,7 +101,7 @@ const ApplicantPreviewPage = () => {
         />
           {/* Profile Picture */}
           <img 
-            src={picture} 
+            src={applicant.profile_picture_url || picture} 
             alt="Profile" 
             style={{ 
               width: '200px', 
@@ -114,7 +114,7 @@ const ApplicantPreviewPage = () => {
           />
 
           {/* Name & Applied Position */}
-          <h2 style={{ fontSize: '28px', marginBottom: '10px', color: '#333' }}>{applicant.name}</h2>
+          <h2 style={{ fontSize: '28px', marginBottom: '10px', color: '#333' }}>{applicant.firstname} {applicant.middlename} {applicant.lastname}</h2>
           <p style={{ fontSize: '20px', color: '#555', marginBottom: '30px' }}>{applicant.appliedPosition}</p>
 
           {/* Contact Info & Additional Information */}
@@ -123,26 +123,26 @@ const ApplicantPreviewPage = () => {
             {/* Left Column */}
             <div>
               <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-                <FaPhoneAlt style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Contact:</strong> {applicant.contact}
+                <FaPhoneAlt style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Contact:</strong>+63{applicant.contact}
               </p>
               <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-                <FaEnvelope style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Email:</strong> {applicant.email}
+                <FaEnvelope style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Email:</strong> {applicant.email}
               </p>
               <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-                <FaCalendarAlt style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Date of Birth:</strong> {applicant.dob}
+                <FaCalendarAlt style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Date of Birth:</strong> {applicant.birthday}
               </p>
             </div>
 
             {/* Right Column */}
             <div>
               <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-                <FaFlag style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Nationality:</strong> {applicant.nationality}
+                <FaFlag style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Nationality:</strong> {applicant.nationality}
               </p>
               <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-                <FaGenderless style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Gender:</strong> {applicant.gender}
+                <FaTransgenderAlt style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Gender:</strong> {applicant.gender}
               </p>
               <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-                <FaHeart style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Marital Status:</strong> {applicant.maritalStatus}
+                <FaHeart style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Marital Status:</strong> {applicant.status}
               </p>
             </div>
           </div>
@@ -150,10 +150,10 @@ const ApplicantPreviewPage = () => {
           {/* Full-width Information */}
           <div style={{ marginTop: '30px', textAlign: 'left' }}>
             <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-              <FaBusinessTime style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Experience:</strong> {applicant.experience}
+              <FaBusinessTime style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Experience:</strong> {applicant.experience}
             </p>
             <p style={{ display: 'flex', alignItems: 'center', fontSize: '20px', marginBottom: '15px' }}>
-              <FaGraduationCap style={{ marginRight: '12px', color: '#007bff' }} /> <strong>Education:</strong> {applicant.education}
+              <FaGraduationCap style={{ marginRight: '12px', color: '#007bff' }} /> <strong className='me-1'>Education:</strong> {applicant.attainment}
             </p>
           </div>
           

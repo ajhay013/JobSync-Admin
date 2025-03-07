@@ -125,9 +125,9 @@ const Dashboard = () => {
 
               {/* Content Row */}
               <div className="row">
-                <Card title="Earnings (Monthly)" value="$40,000" icon="calendar" color="primary" />
-                <Card title="Earnings (Annual)" value="$215,000" icon="dollar-sign" color="success" />
-                <Card title="Tasks" value="50" icon="clipboard-list" color="info" progress={true} />
+                <Card title="Companies" value="100" icon="building" color="primary" />
+                <Card title="Jobs" value="1,000" icon="briefcase" color="success" />
+                <Card title="Applicants" value="50" icon="user" color="info"/>
                 <Card title="Pending Requests" value="18" icon="comments" color="warning" />
               </div>
 
@@ -152,18 +152,18 @@ const Dashboard = () => {
                     </div>
                     <div className="card-body" style={{ height: '350px' }}> {/* Set fixed height */}
                       <Doughnut data={doughnutChartData} options={{
-                        cutout: '70%', // Creates the hole in the center
+                        cutout: '70%', 
                         responsive: true,
-                        maintainAspectRatio: false, // Allows resizing
+                        maintainAspectRatio: false, 
                         plugins: {
                           tooltip: {
-                            enabled: true, // Tooltip enabled
+                            enabled: true,  
                           },
                           legend: {
-                            position: 'top', // Legend position
+                            position: 'top', 
                             labels: {
                               font: {
-                                size: 12, // Adjust font size for the legend
+                                size: 12,  
                               },
                             },
                           },

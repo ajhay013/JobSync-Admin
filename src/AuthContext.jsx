@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         loadUserFromLocalStorage();
-
+    
         const handleStorageChange = (event) => {
             if (event.key === 'user') {
                 if (event.newValue === null) {
@@ -28,18 +28,18 @@ export const AuthProvider = ({ children }) => {
                 }
             }
         };
-
+    
         window.addEventListener('storage', handleStorageChange);
-
+    
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
     }, []);
-
+    
     const login = (userData) => {
         if (userData) {
-            setUser(userData); 
-            localStorage.setItem('user', JSON.stringify(userData)); 
+            setUser(userData);
+            localStorage.setItem('user', JSON.stringify(userData));  
         } else {
             console.error("Invalid user data. Cannot login.");
         }
