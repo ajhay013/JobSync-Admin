@@ -1,17 +1,88 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
 import { FaUser, FaKey } from "react-icons/fa";
+import { postToEndpoint } from '../../components/apiService';
+import { useAuth } from '../../AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { user, login } = useAuth(); 
+  console.log("User in id:", user); 
 
-  const handleSubmit = (e) => {
+  const referrer = '/admindashboard';
+  useEffect(() => {
+    if (user) {
+      navigate(referrer);
+    }
+  }, [user, navigate, referrer]);
+  
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Logging in with:", { username, password });
+    try {
+      const response = await postToEndpoint("/AdminLogin.php", {
+        username,
+        password,
+      });
+
+      if (response.data.success) {
+        localStorage.setItem("user", JSON.stringify(response.data));  
+        login(response.data);  
+        navigate(referrer); 
+    } else {
+        setError("Invalid username or password");
+      }
+    } catch (error) {
+      setError("Server error. Please try again later.");
+    }
   };
 
   return (
     <>
+    {loading && (
+        <div id="preloader">
+        </div>
+      )}
+    <div className="wrapper">
+      <div className="logo">
+        <img src="/assets/logo jobsync2.png" alt="Admin Logo" />
+      </div>
+      <div className="text-center mt-4 name">Admin Login</div>
+
+      {error && <p className="error-message text-danger">{error}</p>}
+
+      <form className="p-3 mt-3" onSubmit={handleSubmit}>
+        <div className="form-field">
+          <FaUser className="icon" />
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-field">
+          <FaKey className="icon" />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit" className="btn mt-3">Login</button>
+      </form>
+
+      <div className="text-center fs-6">
+        <a href="#">Forgot password?</a>  
+      </div>
+    </div>
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
@@ -119,48 +190,6 @@ export default function AdminLogin() {
           }
         `}
       </style>
-
-      <div className="wrapper">
-        <div className="logo">
-          <img
-            src="/src/assets/logo jobsync2.png"
-            alt="Admin Logo"
-          />
-        </div>
-        <div className="text-center mt-4 name">Admin Login</div>
-
-        <form className="p-3 mt-3" onSubmit={handleSubmit}>
-          <div className="form-field">
-            <FaUser className="icon" />
-            <input
-              type="text"
-              name="userName"
-              id="userName"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-field">
-            <FaKey className="icon" />
-            <input
-              type="password"
-              name="password"
-              id="pwd"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn mt-3">Login</button>
-        </form>
-
-        <div className="text-center fs-6">
-          <a href="#">Forgot password?</a>  
-        </div>
-      </div>
     </>
   );
 }

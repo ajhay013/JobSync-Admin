@@ -1,96 +1,83 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTable } from 'react-table';
-import { FaTrashAlt } from 'react-icons/fa'; // Importing trash icon from react-icons
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { FaTrashAlt } from 'react-icons/fa'; 
+import { useNavigate } from 'react-router-dom';  
 import Breadcrumbs from '../components/BreadCumbs';
+import { postToEndpoint } from '../components/apiService';
 
 const EmployerTable = () => {
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();  
+  const [employers, setEmployer] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; 
 
-  // Sample data for authorized representatives and their respective companies
-  const initialData = React.useMemo(
-    () => [
-      {
-        name: 'John Doe',  // Changed from representative to name
-        company: 'Tech Innovators Ltd.',
-        position: 'CEO',   // Added position field
-        contact: '123-456-7890',  // Added contact field
-        email: 'john.doe@example.com',  // Added email field
-        idFront: 'path/to/front-id.jpg', // Added ID images
-        idBack: 'path/to/back-id.jpg',
-      },
-      {
-        name: 'Jane Smith',
-        company: 'Creative Solutions Inc.',
-        position: 'CTO',
-        contact: '987-654-3210',
-        email: 'jane.smith@example.com',
-        idFront: 'path/to/front-id2.jpg',
-        idBack: 'path/to/back-id2.jpg',
-      },
-      // Additional entries...
-    ],
-    []
-  );
+  useEffect(() => {
+    const fetchEmployer = async () => {
+        try {
+            const response = await postToEndpoint('/employerDetails.php');
+            if (response.data.employers) {
+                setEmployer(response.data.employers);
+            } else {
+                console.error('No employers found or an error occurred:', response.data.error);
+            }
+        } catch (error) {
+            console.error('Error fetching employers:', error);
+        }
+    };
+    fetchEmployer();
+  }, []);
 
-  const [representativeData, setRepresentativeData] = React.useState(initialData);
-  const [searchQuery, setSearchQuery] = React.useState('');
-
-  // Filter data based on the search query
+  const [searchQuery, setSearchQuery] = useState('');
+ 
   const filteredData = React.useMemo(() => {
-    return representativeData.filter((applicant) => {
+    return employers.filter((employer) => {
       return (
-        applicant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        applicant.position.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        applicant.company.toLowerCase().includes(searchQuery.toLowerCase())
+        `${employer.firstname} ${employer.middlename} ${employer.lastname}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (employer.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+        (employer.position?.toLowerCase() || '').includes(searchQuery.toLowerCase())
       );
     });
-  }, [searchQuery, representativeData]);
+  }, [searchQuery, employers]);
 
-  // Columns configuration
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'Authorized Representative',  // Renamed from Authorized Representative to Employer Name
-        accessor: 'name',         // Changed from 'representative' to 'name'
-      },
-      {
-        Header: 'Email',
-        accessor: 'email',
-      },
-      {
-        Header: 'Designation',
-        accessor: 'position',
-      },
-      {
-        Header: 'Contact',
-        accessor: 'contact',
-      },
-      {
-        Header: 'Action',
-        Cell: ({ row }) => (
-          <button
-            onClick={() => handleDelete(row.index)}
-            className="btn btn-danger btn-sm"
-          >
-            <FaTrashAlt />
-          </button>
-        ),
-      },
-    ],
-    []
-  );
+  // **Pagination Logic**
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   const handleDelete = (index) => {
-    setRepresentativeData((prevData) => prevData.filter((_, i) => i !== index));
+    setEmployer((prevData) => prevData.filter((_, i) => i !== index));
   };
+
   const handleRowClick = (rowData) => {
     navigate('/adminemployers/employerdetailspreview', { state: { employer: rowData } });
   };
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data: filteredData,   
+    columns: React.useMemo(
+      () => [
+        {
+          Header: 'Authorized Representative',  
+          accessor: 'firstname',
+          Cell: ({ row }) => `${row.original.firstname} ${row.original.middlename} ${row.original.lastname}`
+        },
+        { Header: 'Email', accessor: 'email' },
+        { Header: 'Designation', accessor: 'position' },
+        { Header: 'Contact', accessor: 'contact' },
+        { Header: 'Account Status', accessor: 'account_status' },
+        {
+          Header: 'Action',
+          Cell: ({ row }) => (
+            <button onClick={() => handleDelete(row.index)} className="btn btn-danger btn-sm">
+              <FaTrashAlt />
+            </button>
+          ),
+        },
+      ],
+      []
+    ),
+    data: currentData,   
   });
 
   return (
@@ -105,18 +92,17 @@ const EmployerTable = () => {
       <p className="mb-4" style={{ textAlign: 'left' }}>
         The table below displays authorized representatives with their respective companies, and an action to delete their entries.
       </p>
+
       {/* Search Filter */}
       <div className="mb-3">
-        <div style={{ maxWidth: '300px', marginBottom: '15px' }}>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </div>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ maxWidth: '300px', marginBottom: '15px' }}
+        />
       </div>
 
       {/* DataTable Example */}
@@ -128,10 +114,10 @@ const EmployerTable = () => {
           <div className="table-responsive">
             <table className="table table-bordered" {...getTableProps()} width="100%" cellSpacing="0">
               <thead>
-                {headerGroups.map((headerGroup) => (
-                  <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroups.map((headerGroup, id) => (
+                  <tr {...headerGroup.getHeaderGroupProps()} key={id}>
                     {headerGroup.headers.map((column) => (
-                      <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                      <th {...column.getHeaderProps()} key={column.id}>{column.render('Header')}</th>
                     ))}
                   </tr>
                 ))}
@@ -142,26 +128,46 @@ const EmployerTable = () => {
                   <th>Email</th>
                   <th>Designation</th>
                   <th>Contact</th>
+                  <th>Account Status</th>
                   <th>Action</th>
                 </tr>
               </tfoot>
               <tbody {...getTableBodyProps()}>
                 {rows.map((row) => {
                   prepareRow(row);
+                  const { key, ...rowProps } = row.getRowProps();
                   return (
-                    <tr
-                      {...row.getRowProps()}
-                      onClick={() => handleRowClick(row.original)} // Row click to navigate
-                      style={{ cursor: 'pointer' }} // Make it look clickable
-                    >
-                      {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                      ))}
+                    <tr key={key} {...rowProps} onClick={() => handleRowClick(row.original)} style={{ cursor: 'pointer' }}>
+                      {row.cells.map((cell) => {
+                        const { key, ...cellProps } = cell.getCellProps();
+                        return <td key={key} {...cellProps}>{cell.render('Cell')}</td>;
+                      })}
                     </tr>
                   );
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="d-flex justify-content-between align-items-center mt-3">
+            <button
+              className="btn btn-primary"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+
+            <span>Page {currentPage} of {totalPages}</span>
+
+            <button
+              className="btn btn-primary"
+              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>
